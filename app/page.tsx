@@ -752,15 +752,26 @@ function KnowledgeBaseScreen({ activeAgentId, setActiveAgentId }: { activeAgentI
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const fetchDocuments = useCallback(async () => {
+    if (!RAG_ID) {
+      setFetchError('Knowledge base not configured. RAG ID is missing.')
+      return
+    }
     setLoadingDocs(true)
     setFetchError(null)
     try {
-      const res = await fetch(`/api/rag?ragId=${RAG_ID}`)
+      const res = await fetch(`/api/rag?ragId=${encodeURIComponent(RAG_ID)}`)
       const data = await res.json()
       if (data?.success && Array.isArray(data?.documents)) {
         setDocuments(data.documents)
       } else {
-        setFetchError(data?.error || 'Failed to load documents')
+        const errMsg = data?.error || 'Failed to load documents'
+        if (errMsg.includes('ragId is required')) {
+          setFetchError('Knowledge base connection issue. The RAG ID may not be configured correctly.')
+        } else if (errMsg.includes('LYZR_API_KEY not configured')) {
+          setFetchError('Server configuration issue: LYZR_API_KEY environment variable is not set on the server.')
+        } else {
+          setFetchError(errMsg)
+        }
       }
     } catch {
       setFetchError('Network error loading documents')
@@ -775,7 +786,7 @@ function KnowledgeBaseScreen({ activeAgentId, setActiveAgentId }: { activeAgentI
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (!file) return
+    if (!file || !RAG_ID) return
     setUploading(true)
     setUploadError(null)
     try {
@@ -798,6 +809,7 @@ function KnowledgeBaseScreen({ activeAgentId, setActiveAgentId }: { activeAgentI
   }
 
   const handleDelete = async (fileName: string) => {
+    if (!RAG_ID) return
     setDeleting(fileName)
     try {
       const res = await fetch('/api/rag', {
@@ -906,6 +918,7 @@ function KnowledgeBaseScreen({ activeAgentId, setActiveAgentId }: { activeAgentI
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 text-red-700 text-xs mb-3">
               <HiExclamationTriangle className="w-4 h-4 shrink-0" />
               <span>{fetchError}</span>
+              <button onClick={() => setFetchError(null)} className="ml-auto shrink-0"><HiXMark className="w-3.5 h-3.5" /></button>
             </div>
           )}
           {loadingDocs ? (
