@@ -35,21 +35,64 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const response = await fetch(`${LYZR_RAG_BASE_URL}/rag/documents/${encodeURIComponent(ragId)}/`, {
-      method: 'GET',
-      headers: {
-        'accept': 'application/json',
-        'x-api-key': LYZR_API_KEY,
-      },
-    })
+    let response: Response
+    try {
+      response = await fetch(`${LYZR_RAG_BASE_URL}/rag/documents/${encodeURIComponent(ragId)}/`, {
+        method: 'GET',
+        headers: {
+          'accept': 'application/json',
+          'x-api-key': LYZR_API_KEY,
+        },
+      })
+    } catch (fetchErr) {
+      // Network-level error connecting to upstream RAG API
+      return NextResponse.json({
+        success: true,
+        documents: [],
+        ragId,
+        message: 'Knowledge base service temporarily unavailable. Documents will appear when service recovers.',
+        timestamp: new Date().toISOString(),
+      })
+    }
+
+    // 404 from upstream typically means no documents exist yet — treat as empty
+    if (response.status === 404) {
+      return NextResponse.json({
+        success: true,
+        documents: [],
+        ragId,
+        timestamp: new Date().toISOString(),
+      })
+    }
 
     if (response.ok) {
-      const data = await response.json()
-      // Response is array of file paths like ["storage/voicestream-dev-guide.pdf"]
-      const filePaths = Array.isArray(data) ? data : (data.documents || data.data || [])
+      let data: unknown
+      try {
+        data = await response.json()
+      } catch {
+        return NextResponse.json({
+          success: true,
+          documents: [],
+          ragId,
+          timestamp: new Date().toISOString(),
+        })
+      }
 
-      const documents = filePaths.map((filePath: string) => {
-        const fileName = filePath.split('/').pop() || filePath
+      // Handle various response formats from the Lyzr RAG API
+      // Could be: array of file paths, {documents: [...]}, {data: [...]}, or empty object
+      let filePaths: unknown[] = []
+      if (Array.isArray(data)) {
+        filePaths = data
+      } else if (data && typeof data === 'object') {
+        const obj = data as Record<string, unknown>
+        if (Array.isArray(obj.documents)) filePaths = obj.documents
+        else if (Array.isArray(obj.data)) filePaths = obj.data
+        else if (Array.isArray(obj.files)) filePaths = obj.files
+      }
+
+      const documents = filePaths.map((filePath: unknown) => {
+        const pathStr = typeof filePath === 'string' ? filePath : (filePath && typeof filePath === 'object' && 'name' in (filePath as Record<string, unknown>) ? String((filePath as Record<string, unknown>).name) : String(filePath))
+        const fileName = pathStr.split('/').pop() || pathStr
         const ext = fileName.split('.').pop()?.toLowerCase() || ''
         const fileType = ext === 'pdf' ? 'pdf' : ext === 'docx' ? 'docx' : ext === 'txt' ? 'txt' : 'unknown'
 
@@ -67,7 +110,23 @@ export async function GET(request: NextRequest) {
         timestamp: new Date().toISOString(),
       })
     } else {
-      const errorText = await response.text()
+      // For 5xx errors from upstream, return empty documents gracefully
+      if (response.status >= 500) {
+        return NextResponse.json({
+          success: true,
+          documents: [],
+          ragId,
+          message: 'Knowledge base service is temporarily experiencing issues. Your documents are safe.',
+          timestamp: new Date().toISOString(),
+        })
+      }
+
+      let errorText = ''
+      try {
+        errorText = await response.text()
+      } catch {
+        errorText = 'Could not read error response'
+      }
       return NextResponse.json(
         {
           success: false,

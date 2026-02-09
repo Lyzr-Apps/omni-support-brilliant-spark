@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { callAIAgent } from '@/lib/aiAgent'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -14,7 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
 import { Progress } from '@/components/ui/progress'
 import { Switch } from '@/components/ui/switch'
-import { HiChatBubbleLeftRight, HiEnvelope, HiBookOpen, HiCog6Tooth, HiMagnifyingGlass, HiPaperAirplane, HiArrowPath, HiArrowUpTray, HiTrash, HiExclamationTriangle, HiCheckCircle, HiClock, HiChevronRight, HiXMark, HiGlobeAlt, HiUser, HiDocumentText, HiAdjustmentsHorizontal, HiBolt, HiShieldCheck, HiChatBubbleOvalLeft } from 'react-icons/hi2'
+import { HiChatBubbleLeftRight, HiEnvelope, HiBookOpen, HiCog6Tooth, HiMagnifyingGlass, HiPaperAirplane, HiArrowPath, HiArrowUpTray, HiTrash, HiExclamationTriangle, HiCheckCircle, HiClock, HiXMark, HiGlobeAlt, HiUser, HiDocumentText, HiBolt, HiShieldCheck, HiChatBubbleOvalLeft } from 'react-icons/hi2'
 import { SiGmail, SiSlack } from 'react-icons/si'
 
 // ========== CONSTANTS ==========
@@ -749,6 +749,7 @@ function KnowledgeBaseScreen({ activeAgentId, setActiveAgentId }: { activeAgentI
   const [testLoading, setTestLoading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [fetchError, setFetchError] = useState<string | null>(null)
+  const [fetchInfo, setFetchInfo] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const fetchDocuments = useCallback(async () => {
@@ -758,23 +759,34 @@ function KnowledgeBaseScreen({ activeAgentId, setActiveAgentId }: { activeAgentI
     }
     setLoadingDocs(true)
     setFetchError(null)
+    setFetchInfo(null)
     try {
       const res = await fetch(`/api/rag?ragId=${encodeURIComponent(RAG_ID)}`)
-      const data = await res.json()
-      if (data?.success && Array.isArray(data?.documents)) {
-        setDocuments(data.documents)
-      } else {
-        const errMsg = data?.error || 'Failed to load documents'
-        if (errMsg.includes('ragId is required')) {
-          setFetchError('Knowledge base connection issue. The RAG ID may not be configured correctly.')
-        } else if (errMsg.includes('LYZR_API_KEY not configured')) {
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({ error: `Server returned ${res.status}` }))
+        const errMsg = data?.error || `Failed to load documents (${res.status})`
+        if (errMsg.includes('LYZR_API_KEY not configured')) {
           setFetchError('Server configuration issue: LYZR_API_KEY environment variable is not set on the server.')
+        } else if (res.status === 400) {
+          setFetchError('Knowledge base request error. Please try refreshing.')
         } else {
           setFetchError(errMsg)
         }
+        return
+      }
+      const data = await res.json()
+      if (data?.success) {
+        const docs = Array.isArray(data?.documents) ? data.documents : []
+        setDocuments(docs)
+        // Show info message if upstream had issues but still returned successfully
+        if (data?.message) {
+          setFetchInfo(data.message)
+        }
+      } else {
+        setFetchError(data?.error || 'Unexpected response from knowledge base')
       }
     } catch {
-      setFetchError('Network error loading documents')
+      setFetchError('Network error loading documents. Please check your connection.')
     } finally {
       setLoadingDocs(false)
     }
@@ -918,7 +930,15 @@ function KnowledgeBaseScreen({ activeAgentId, setActiveAgentId }: { activeAgentI
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-50 text-red-700 text-xs mb-3">
               <HiExclamationTriangle className="w-4 h-4 shrink-0" />
               <span>{fetchError}</span>
-              <button onClick={() => setFetchError(null)} className="ml-auto shrink-0"><HiXMark className="w-3.5 h-3.5" /></button>
+              <Button variant="outline" size="sm" className="ml-2 text-[10px] h-6 px-2 border-red-200 text-red-600 hover:bg-red-100 shrink-0" onClick={() => { setFetchError(null); fetchDocuments() }}>Retry</Button>
+              <button onClick={() => setFetchError(null)} className="shrink-0"><HiXMark className="w-3.5 h-3.5" /></button>
+            </div>
+          )}
+          {fetchInfo && !fetchError && (
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-50 text-amber-700 text-xs mb-3">
+              <HiClock className="w-4 h-4 shrink-0" />
+              <span>{fetchInfo}</span>
+              <button onClick={() => setFetchInfo(null)} className="ml-auto shrink-0"><HiXMark className="w-3.5 h-3.5" /></button>
             </div>
           )}
           {loadingDocs ? (
