@@ -1,0 +1,27 @@
+{
+  "agent_name": "Channel Response Agent",
+  "agent_id": "698a275e4d5b127836d8dadf",
+  "test_message": "Format this response for the email channel: Lyzr offers an AI agent development platform that helps businesses build and deploy intelligent agents. Key features include agent studio, knowledge base integration, and multi-channel deployment. For pricing, please visit our website or contact sales.",
+  "expected_purpose": "response_formatting",
+  "timestamp": "2026-02-09T18:30:21.570049",
+  "is_valid_json": true,
+  "validation_errors": [],
+  "actual_response": {
+    "status": "success",
+    "result": {
+      "summary": "Formatted an email response introducing Lyzr's AI agent platform with key features and pricing call-to-action.",
+      "data": {
+        "formatted_response": "Dear Customer,\n\nThank you for your interest in Lyzr.\n\nLyzr provides an advanced AI agent development platform designed to help businesses build and deploy intelligent agents with ease. Some of the key features we offer include:\n- Agent Studio for streamlined development\n- Knowledge base integration for smarter interactions\n- Multi-channel deployment to reach customers wherever they are\n\nFor detailed pricing information, please visit our website or reach out directly to our sales team. We\u2019re here to assist you with any specific questions you might have.\n\nBest regards,\nThe Lyzr Team",
+        "channel": "email",
+        "tone": "Professional, informative, helpful",
+        "needs_human_review": false,
+        "character_count": 624
+      }
+    },
+    "metadata": {
+      "agent_name": "Channel Response Agent",
+      "timestamp": "2024-06-19T17:33:47Z"
+    }
+  },
+  "raw_response": "{\n  \"status\": \"success\",\n  \"result\": {\n    \"summary\": \"Formatted an email response introducing Lyzr's AI agent platform with key features and pricing call-to-action.\",\n    \"data\": {\n      \"formatted_response\": \"Dear Customer,\\n\\nThank you for your interest in Lyzr.\\n\\nLyzr provides an advanced AI agent development platform designed to help businesses build and deploy intelligent agents with ease. Some of the key features we offer include:\\n- Agent Studio for streamlined development\\n- Knowledge base integration for smarter interactions\\n- Multi-channel deployment to reach customers wherever they are\\n\\nFor detailed pricing information, please visit our website or reach out directly to our sales team. We\u2019re here to assist you with any specific questions you might have.\\n\\nBest regards,\\nThe Lyzr Team\",\n      \"channel\": \"email\",\n      \"tone\": \"Professional, informative, helpful\",\n      \"needs_human_review\": false,\n      \"character_count\": 624\n    }\n  },\n  \"metadata\": {\n    \"agent_name\": \"Channel Response Agent\",\n    \"timestamp\": \"2024-06-19T17:33:47Z\"\n  }\n}"
+}

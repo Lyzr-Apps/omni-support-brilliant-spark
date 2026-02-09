@@ -1,0 +1,39 @@
+{
+  "agent_name": "Channel Response Agent",
+  "agent_id": "698a275e4d5b127836d8dadf",
+  "test_input": "Format this response for the email channel: Lyzr offers an AI agent development platform that helps businesses build and deploy intelligent agents. Key features include agent studio, knowledge base integration, and multi-channel deployment. For pricing, please visit our website or contact sales.",
+  "raw_response": {
+    "status": "success",
+    "result": {
+      "summary": "Formatted an email response introducing Lyzr's AI agent platform with key features and pricing call-to-action.",
+      "data": {
+        "formatted_response": "Dear Customer,\n\nThank you for your interest in Lyzr.\n\nLyzr provides an advanced AI agent development platform designed to help businesses build and deploy intelligent agents with ease. Some of the key features we offer include:\n- Agent Studio for streamlined development\n- Knowledge base integration for smarter interactions\n- Multi-channel deployment to reach customers wherever they are\n\nFor detailed pricing information, please visit our website or reach out directly to our sales team. We\u2019re here to assist you with any specific questions you might have.\n\nBest regards,\nThe Lyzr Team",
+        "channel": "email",
+        "tone": "Professional, informative, helpful",
+        "needs_human_review": false,
+        "character_count": 624
+      }
+    },
+    "metadata": {
+      "agent_name": "Channel Response Agent",
+      "timestamp": "2024-06-19T17:33:47Z"
+    }
+  },
+  "field_types": {
+    "status": "string",
+    "result": "object",
+    "result.summary": "string",
+    "result.data": "object",
+    "result.data.formatted_response": "string",
+    "result.data.channel": "string",
+    "result.data.tone": "string",
+    "result.data.needs_human_review": "boolean",
+    "result.data.character_count": "number",
+    "metadata": "object",
+    "metadata.agent_name": "string",
+    "metadata.timestamp": "string"
+  },
+  "test_status": "passed",
+  "timestamp": "2026-02-09T00:00:00Z",
+  "notes": "Agent successfully formatted the input text into a professional email format. Response structure follows the standard {status, result, metadata} format."
+}

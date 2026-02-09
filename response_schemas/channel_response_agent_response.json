@@ -1,0 +1,60 @@
+{
+  "agent_name": "Channel Response Agent",
+  "agent_id": "698a275e4d5b127836d8dadf",
+  "agent_purpose": "response_formatting",
+  "description": "Formats customer service responses for specific communication channels (email, chat, etc). Returns the formatted text, channel type, tone assessment, review flag, and character count.",
+  "response_schema": {
+    "status": "string",
+    "result": {
+      "summary": "string",
+      "data": {
+        "formatted_response": "string",
+        "channel": "string",
+        "tone": "string",
+        "needs_human_review": "boolean",
+        "character_count": "number"
+      }
+    },
+    "metadata": {
+      "agent_name": "string",
+      "timestamp": "string"
+    }
+  },
+  "example_response": {
+    "status": "success",
+    "result": {
+      "summary": "Provided a sample response for the chat channel.",
+      "data": {
+        "formatted_response": "Hi there! How can I assist you today? If you need help with your account or have any questions, just let me know\u2014I'm here to help!",
+        "channel": "chat",
+        "tone": "Friendly, conversational, helpful",
+        "needs_human_review": false,
+        "character_count": 168
+      }
+    },
+    "metadata": {
+      "agent_name": "Channel Response Agent",
+      "timestamp": "2024-06-11T17:42:54Z"
+    }
+  },
+  "is_actual_tested": true,
+  "test_timestamp": "2026-02-09T18:31:21.845608",
+  "test_message_used": "Hello, provide a sample response",
+  "actual_test_response": {
+    "status": "success",
+    "result": {
+      "summary": "Provided a sample response for the chat channel.",
+      "data": {
+        "formatted_response": "Hi there! How can I assist you today? If you need help with your account or have any questions, just let me know\u2014I'm here to help!",
+        "channel": "chat",
+        "tone": "Friendly, conversational, helpful",
+        "needs_human_review": false,
+        "character_count": 168
+      }
+    },
+    "metadata": {
+      "agent_name": "Channel Response Agent",
+      "timestamp": "2024-06-11T17:42:54Z"
+    }
+  }
+}

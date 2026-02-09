@@ -1,0 +1,43 @@
+{
+  "agent_name": "Customer Service Coordinator",
+  "agent_id": "698a277a79bc02d9d4f13ce1",
+  "test_input": "Hi, I'm interested in Lyzr's platform. Can you tell me about the features and pricing? I'd like to know how it compares to building agents from scratch. Please respond in chat format.",
+  "raw_response": {
+    "status": "success",
+    "result": {
+      "summary": "Unable to find specific information on Lyzr platform features or pricing in the knowledge base. Inquiry escalated to a human agent for personalized assistance.",
+      "data": {
+        "customer_response": "Thank you for your interest! I am escalating your request to a specialist, as the current knowledge base does not contain detailed information about Lyzr's platform features, pricing, or comparison to building agents from scratch. One of our team members will reach out to you shortly with a comprehensive answer.",
+        "channel": "chat",
+        "topic_category": "product inquiry",
+        "urgency_level": "medium",
+        "escalated": true,
+        "escalation_reason": "Knowledge base does not contain relevant information.",
+        "resolution_status": "escalated"
+      }
+    },
+    "metadata": {
+      "agent_name": "Customer Service Coordinator",
+      "timestamp": "2024-06-08T14:34:20Z"
+    }
+  },
+  "field_types": {
+    "status": "string",
+    "result": "object",
+    "result.summary": "string",
+    "result.data": "object",
+    "result.data.customer_response": "string",
+    "result.data.channel": "string",
+    "result.data.topic_category": "string",
+    "result.data.urgency_level": "string",
+    "result.data.escalated": "boolean",
+    "result.data.escalation_reason": "string",
+    "result.data.resolution_status": "string",
+    "metadata": "object",
+    "metadata.agent_name": "string",
+    "metadata.timestamp": "string"
+  },
+  "test_status": "passed",
+  "timestamp": "2026-02-09T00:00:00Z",
+  "notes": "Manager agent returned standard {status, result, metadata} format (not the alternative {response, module_outputs} format). It successfully coordinated the request, determined the knowledge base lacked relevant info, and escalated the inquiry."
+}

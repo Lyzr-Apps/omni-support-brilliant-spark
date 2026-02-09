@@ -1,0 +1,26 @@
+{
+  "agent_name": "Knowledge Retrieval Agent",
+  "agent_id": "698a274a3177114a698d5cc7",
+  "test_message": "What products and services does Lyzr offer? Tell me about their AI agent platform.",
+  "expected_purpose": "knowledge_retrieval",
+  "timestamp": "2026-02-09T18:30:17.402563",
+  "is_valid_json": true,
+  "validation_errors": [],
+  "actual_response": {
+    "status": "error",
+    "result": {
+      "summary": "No relevant information found regarding Lyzr's products, services, or AI agent platform in the knowledge base.",
+      "data": {
+        "answer": "The knowledge base does not contain information related to the products and services offered by Lyzr, nor details about their AI agent platform.",
+        "sources": "N/A",
+        "confidence": "low",
+        "needs_escalation": true
+      }
+    },
+    "metadata": {
+      "agent_name": "Knowledge Retrieval Agent",
+      "timestamp": "2023-10-04T12:00:00Z"
+    }
+  },
+  "raw_response": "{\n  \"status\": \"error\",\n  \"result\": {\n    \"summary\": \"No relevant information found regarding Lyzr's products, services, or AI agent platform in the knowledge base.\",\n    \"data\": {\n      \"answer\": \"The knowledge base does not contain information related to the products and services offered by Lyzr, nor details about their AI agent platform.\",\n      \"sources\": \"N/A\",\n      \"confidence\": \"low\",\n      \"needs_escalation\": true\n    }\n  },\n  \"metadata\": {\n    \"agent_name\": \"Knowledge Retrieval Agent\",\n    \"timestamp\": \"2023-10-04T12:00:00Z\"\n  }\n}"
+}

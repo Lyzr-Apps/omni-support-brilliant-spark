@@ -1,0 +1,29 @@
+{
+  "agent_name": "Customer Service Coordinator",
+  "agent_id": "698a277a79bc02d9d4f13ce1",
+  "test_message": "Hi, I'm interested in Lyzr's platform. Can you tell me about the features and pricing? I'd like to know how it compares to building agents from scratch. Please respond in chat format.",
+  "expected_purpose": "manager (This is a manager-subagent agent. Response may use {response, module_outputs} format instead of {status, result, metadata})",
+  "timestamp": "2026-02-09T18:30:43.507801",
+  "is_valid_json": true,
+  "validation_errors": [],
+  "actual_response": {
+    "status": "success",
+    "result": {
+      "summary": "Unable to find specific information on Lyzr platform features or pricing in the knowledge base. Inquiry escalated to a human agent for personalized assistance.",
+      "data": {
+        "customer_response": "Thank you for your interest! I am escalating your request to a specialist, as the current knowledge base does not contain detailed information about Lyzr's platform features, pricing, or comparison to building agents from scratch. One of our team members will reach out to you shortly with a comprehensive answer.",
+        "channel": "chat",
+        "topic_category": "product inquiry",
+        "urgency_level": "medium",
+        "escalated": true,
+        "escalation_reason": "Knowledge base does not contain relevant information.",
+        "resolution_status": "escalated"
+      }
+    },
+    "metadata": {
+      "agent_name": "Customer Service Coordinator",
+      "timestamp": "2024-06-08T14:34:20Z"
+    }
+  },
+  "raw_response": "{\n  \"status\": \"success\",\n  \"result\": {\n    \"summary\": \"Unable to find specific information on Lyzr platform features or pricing in the knowledge base. Inquiry escalated to a human agent for personalized assistance.\",\n    \"data\": {\n      \"customer_response\": \"Thank you for your interest! I am escalating your request to a specialist, as the current knowledge base does not contain detailed information about Lyzr's platform features, pricing, or comparison to building agents from scratch. One of our team members will reach out to you shortly with a comprehensive answer.\",\n      \"channel\": \"chat\",\n      \"topic_category\": \"product inquiry\",\n      \"urgency_level\": \"medium\",\n      \"escalated\": true,\n      \"escalation_reason\": \"Knowledge base does not contain relevant information.\",\n      \"resolution_status\": \"escalated\"\n    }\n  },\n  \"metadata\": {\n    \"agent_name\": \"Customer Service Coordinator\",\n    \"timestamp\": \"2024-06-08T14:34:20Z\"\n  }\n}"
+}

@@ -1,0 +1,66 @@
+{
+  "agent_name": "Customer Service Coordinator",
+  "agent_id": "698a277a79bc02d9d4f13ce1",
+  "agent_purpose": "manager",
+  "description": "Manager agent that coordinates Knowledge Retrieval and Channel Response sub-agents to handle customer service inquiries end-to-end. Returns the final customer response, channel, topic category, urgency level, escalation status, and resolution status.",
+  "response_schema": {
+    "status": "string",
+    "result": {
+      "summary": "string",
+      "data": {
+        "customer_response": "string",
+        "channel": "string",
+        "topic_category": "string",
+        "urgency_level": "string",
+        "escalated": "boolean",
+        "escalation_reason": "string",
+        "resolution_status": "string"
+      }
+    },
+    "metadata": {
+      "agent_name": "string",
+      "timestamp": "string"
+    }
+  },
+  "example_response": {
+    "status": "error",
+    "result": {
+      "summary": "No customer request or channel metadata was detected in the input. Unable to analyze or coordinate sub-agents without a specific inquiry.",
+      "data": {
+        "customer_response": "We did not receive a customer request or channel information. Please provide the exact customer message and specify the channel (chat, email, or social) so we can coordinate the appropriate support.",
+        "channel": "",
+        "topic_category": "",
+        "urgency_level": "",
+        "escalated": false,
+        "escalation_reason": "",
+        "resolution_status": "pending"
+      }
+    },
+    "metadata": {
+      "agent_name": "Customer Service Coordinator",
+      "timestamp": "2024-06-12T19:08:34.000Z"
+    }
+  },
+  "is_actual_tested": true,
+  "test_timestamp": "2026-02-09T18:31:30.623786",
+  "test_message_used": "Process this request and coordinate sub-agents",
+  "actual_test_response": {
+    "status": "error",
+    "result": {
+      "summary": "No customer request or channel metadata was detected in the input. Unable to analyze or coordinate sub-agents without a specific inquiry.",
+      "data": {
+        "customer_response": "We did not receive a customer request or channel information. Please provide the exact customer message and specify the channel (chat, email, or social) so we can coordinate the appropriate support.",
+        "channel": "",
+        "topic_category": "",
+        "urgency_level": "",
+        "escalated": false,
+        "escalation_reason": "",
+        "resolution_status": "pending"
+      }
+    },
+    "metadata": {
+      "agent_name": "Customer Service Coordinator",
+      "timestamp": "2024-06-12T19:08:34.000Z"
+    }
+  }
+}

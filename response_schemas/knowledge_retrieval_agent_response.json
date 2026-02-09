@@ -1,0 +1,57 @@
+{
+  "agent_name": "Knowledge Retrieval Agent",
+  "agent_id": "698a274a3177114a698d5cc7",
+  "agent_purpose": "knowledge_retrieval",
+  "description": "Retrieves knowledge base information to answer customer queries about products and services. Returns answer text, source references, confidence level, and escalation flag.",
+  "response_schema": {
+    "status": "string",
+    "result": {
+      "summary": "string",
+      "data": {
+        "answer": "string",
+        "sources": "string",
+        "confidence": "string",
+        "needs_escalation": "boolean"
+      }
+    },
+    "metadata": {
+      "agent_name": "string",
+      "timestamp": "string"
+    }
+  },
+  "example_response": {
+    "status": "error",
+    "result": {
+      "summary": "No relevant information available.",
+      "data": {
+        "answer": "The query does not align with the existing knowledge base, and thus no specific sample response can be provided.",
+        "sources": "N/A",
+        "confidence": "low",
+        "needs_escalation": true
+      }
+    },
+    "metadata": {
+      "agent_name": "Knowledge Retrieval Agent",
+      "timestamp": "2023-10-04T12:00:00Z"
+    }
+  },
+  "is_actual_tested": true,
+  "test_timestamp": "2026-02-09T18:31:19.563146",
+  "test_message_used": "Hello, provide a sample response",
+  "actual_test_response": {
+    "status": "error",
+    "result": {
+      "summary": "No relevant information available.",
+      "data": {
+        "answer": "The query does not align with the existing knowledge base, and thus no specific sample response can be provided.",
+        "sources": "N/A",
+        "confidence": "low",
+        "needs_escalation": true
+      }
+    },
+    "metadata": {
+      "agent_name": "Knowledge Retrieval Agent",
+      "timestamp": "2023-10-04T12:00:00Z"
+    }
+  }
+}

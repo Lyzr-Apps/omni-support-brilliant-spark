@@ -1,0 +1,37 @@
+{
+  "agent_name": "Knowledge Retrieval Agent",
+  "agent_id": "698a274a3177114a698d5cc7",
+  "test_input": "What products and services does Lyzr offer? Tell me about their AI agent platform.",
+  "raw_response": {
+    "status": "error",
+    "result": {
+      "summary": "No relevant information found regarding Lyzr's products, services, or AI agent platform in the knowledge base.",
+      "data": {
+        "answer": "The knowledge base does not contain information related to the products and services offered by Lyzr, nor details about their AI agent platform.",
+        "sources": "N/A",
+        "confidence": "low",
+        "needs_escalation": true
+      }
+    },
+    "metadata": {
+      "agent_name": "Knowledge Retrieval Agent",
+      "timestamp": "2023-10-04T12:00:00Z"
+    }
+  },
+  "field_types": {
+    "status": "string",
+    "result": "object",
+    "result.summary": "string",
+    "result.data": "object",
+    "result.data.answer": "string",
+    "result.data.sources": "string",
+    "result.data.confidence": "string",
+    "result.data.needs_escalation": "boolean",
+    "metadata": "object",
+    "metadata.agent_name": "string",
+    "metadata.timestamp": "string"
+  },
+  "test_status": "passed",
+  "timestamp": "2026-02-09T00:00:00Z",
+  "notes": "Agent returned status 'error' because the knowledge base does not contain Lyzr-specific information. The structure is valid and follows the expected {status, result, metadata} format."
+}

@@ -1,0 +1,24 @@
+{
+  "agents": [
+    {
+      "name": "Customer Service Coordinator",
+      "agent_id": "698a277a79bc02d9d4f13ce1",
+      "type": "manager"
+    },
+    {
+      "name": "Knowledge Retrieval Agent",
+      "agent_id": "698a274a3177114a698d5cc7",
+      "type": "sub-agent",
+      "has_kb": true
+    },
+    {
+      "name": "Channel Response Agent",
+      "agent_id": "698a275e4d5b127836d8dadf",
+      "type": "sub-agent"
+    }
+  ],
+  "knowledge_base": {
+    "name": "customer_service_kb",
+    "rag_id": "698a272960cd1fd2d988dece"
+  }
+}
