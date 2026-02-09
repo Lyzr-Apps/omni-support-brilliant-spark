@@ -1161,6 +1161,209 @@ function SettingsScreen() {
   )
 }
 
+// ========== LIVE CHAT WIDGET ==========
+interface LiveChatMessage {
+  id: string
+  sender: 'user' | 'agent'
+  text: string
+  timestamp: string
+}
+
+function LiveChatWidget() {
+  const [isOpen, setIsOpen] = useState(false)
+  const [messages, setMessages] = useState<LiveChatMessage[]>([])
+  const [input, setInput] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [sessionId] = useState(() => generateSessionId(COORDINATOR_ID))
+  const [hasGreeted, setHasGreeted] = useState(false)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [messages])
+
+  useEffect(() => {
+    if (isOpen && !hasGreeted) {
+      setMessages([{
+        id: 'greeting',
+        sender: 'agent',
+        text: 'Hello! Welcome to our support. How can I help you today?',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      }])
+      setHasGreeted(true)
+    }
+    if (isOpen && inputRef.current) {
+      setTimeout(() => inputRef.current?.focus(), 100)
+    }
+  }, [isOpen, hasGreeted])
+
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return
+
+    const userText = input.trim()
+    const userMsg: LiveChatMessage = {
+      id: `lc_${Date.now()}`,
+      sender: 'user',
+      text: userText,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    }
+
+    setMessages(prev => [...prev, userMsg])
+    setInput('')
+    setIsLoading(true)
+
+    try {
+      const result = await callAIAgent(userText, COORDINATOR_ID, { session_id: sessionId })
+
+      let agentText = 'I apologize, but I encountered an issue. Please try again.'
+      if (result.success && result.response) {
+        const resData = result.response?.result?.data || result.response?.result || {}
+        agentText = resData?.customer_response || resData?.answer || result.response?.result?.summary || result.response?.message || agentText
+      } else if (result?.error) {
+        agentText = 'Sorry, I am having trouble connecting right now. Please try again in a moment.'
+      }
+
+      const agentMsg: LiveChatMessage = {
+        id: `lc_${Date.now()}_agent`,
+        sender: 'agent',
+        text: agentText,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      }
+      setMessages(prev => [...prev, agentMsg])
+    } catch {
+      setMessages(prev => [...prev, {
+        id: `lc_${Date.now()}_err`,
+        sender: 'agent',
+        text: 'Network error occurred. Please check your connection and try again.',
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      }])
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      handleSend()
+    }
+  }
+
+  const unreadCount = 0
+
+  return (
+    <>
+      {/* Chat Panel */}
+      {isOpen && (
+        <div className="fixed bottom-24 right-6 z-50 w-[380px] max-h-[560px] flex flex-col rounded-2xl border border-border/50 shadow-2xl shadow-primary/10 overflow-hidden" style={{ background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(20px)' }}>
+          {/* Header */}
+          <div className="px-4 py-3 flex items-center gap-3 border-b border-border/50" style={{ background: 'hsl(230 85% 55%)', color: 'white' }}>
+            <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+              <HiChatBubbleLeftRight className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-semibold text-sm">Live Support Chat</div>
+              <div className="flex items-center gap-1.5 text-[11px] text-white/80">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
+                <span>AI Agent Online</span>
+              </div>
+            </div>
+            <button onClick={() => setIsOpen(false)} className="w-8 h-8 rounded-full hover:bg-white/15 flex items-center justify-center transition-colors">
+              <HiXMark className="w-5 h-5 text-white" />
+            </button>
+          </div>
+
+          {/* Messages Area */}
+          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3" style={{ maxHeight: '380px', minHeight: '280px' }}>
+            {messages.map((msg) => (
+              <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[80%] ${msg.sender === 'user' ? '' : 'flex items-start gap-2'}`}>
+                  {msg.sender === 'agent' && (
+                    <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                      <HiBolt className="w-3.5 h-3.5 text-primary" />
+                    </div>
+                  )}
+                  <div>
+                    <div className={`rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${msg.sender === 'user' ? 'bg-primary text-white rounded-br-md' : 'bg-secondary/70 text-foreground rounded-bl-md'}`}>
+                      {msg.text}
+                    </div>
+                    <div className={`text-[10px] text-muted-foreground mt-1 ${msg.sender === 'user' ? 'text-right' : ''}`}>
+                      {msg.timestamp}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="flex items-start gap-2">
+                  <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <HiBolt className="w-3.5 h-3.5 text-primary" />
+                  </div>
+                  <div className="rounded-2xl rounded-bl-md px-4 py-3 bg-secondary/70">
+                    <div className="flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <span className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <span className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input Area */}
+          <div className="px-3 py-3 border-t border-border/50">
+            <div className="flex items-center gap-2">
+              <input
+                ref={inputRef}
+                type="text"
+                placeholder="Type a message..."
+                className="flex-1 px-3.5 py-2.5 rounded-xl bg-secondary/50 border border-border/50 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                disabled={isLoading}
+              />
+              <button
+                onClick={handleSend}
+                disabled={!input.trim() || isLoading}
+                className="w-10 h-10 rounded-xl bg-primary hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center transition-all shadow-md shadow-primary/20"
+              >
+                <HiPaperAirplane className="w-4 h-4 text-white" />
+              </button>
+            </div>
+            <div className="flex items-center justify-center gap-1 mt-2">
+              <HiShieldCheck className="w-3 h-3 text-muted-foreground/60" />
+              <span className="text-[10px] text-muted-foreground/60">Powered by AI Customer Service</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary hover:bg-primary/90 shadow-xl shadow-primary/30 flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+        title="Open Live Chat"
+      >
+        {isOpen ? (
+          <HiXMark className="w-6 h-6 text-white" />
+        ) : (
+          <HiChatBubbleOvalLeft className="w-6 h-6 text-white" />
+        )}
+        {!isOpen && unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">{unreadCount}</span>
+        )}
+      </button>
+    </>
+  )
+}
+
 // ========== MAIN PAGE ==========
 export default function Home() {
   const [activeScreen, setActiveScreen] = useState<Screen>('conversations')
@@ -1303,6 +1506,9 @@ export default function Home() {
           )}
         </div>
       </main>
+
+      {/* Live Chat Widget */}
+      <LiveChatWidget />
     </div>
   )
 }
